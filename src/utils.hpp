@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "vga.hpp"
+#include "VGA/vga.hpp"
 
 extern "C" void halt();
 

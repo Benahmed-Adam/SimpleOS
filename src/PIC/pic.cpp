@@ -1,6 +1,6 @@
-#include "pic.hpp"
+#include "PIC/pic.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
 
 #define MASTER_COMMAND 0x20
 #define MASTER_DATA 0x21

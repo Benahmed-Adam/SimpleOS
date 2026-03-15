@@ -1,13 +1,12 @@
-#include "gdt.hpp"
-#include "idt.hpp"
-#include "input.hpp"
-#include "memory.hpp"
-#include "pic.hpp"
-#include "process.hpp"
-#include "shell.hpp"
-#include "structs.hpp"
-#include "time.hpp"
-#include "vga.hpp"
+#include "GDT/gdt.hpp"
+#include "IDT/idt.hpp"
+#include "Input/input.hpp"
+#include "Memory/memory.hpp"
+#include "PIC/pic.hpp"
+#include "Process/process.hpp"
+#include "Shell/shell.hpp"
+#include "Time/time.hpp"
+#include "VGA/vga.hpp"
 #include <stdint.h>
 
 int idle_task(int, char**)

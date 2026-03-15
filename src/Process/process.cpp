@@ -1,8 +1,8 @@
-#include "process.hpp"
-#include "lock.hpp"
-#include "memory.hpp"
+#include "Process/process.hpp"
+#include "Lock/lock.hpp"
+#include "Memory/memory.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
 
 void Process::init(Program prog, int argc, char* argv[], const char* name)
 {
@@ -51,13 +51,13 @@ void add_process(Program prog, const char* name, int argc, char* argv[])
 {
     uint8_t* new_stack = new uint8_t[STACK_SIZE];
     if (new_stack == nullptr) {
-        PANIC("Plus de place dans la memoire pour la stack dun nouveau proceessus");
+        PANIC("No more memory available for new process stack");
     }
 
     Process* new_proc = new Process();
     if (new_proc == nullptr) {
         delete[] new_stack;
-        PANIC("Plus de placee dans la mémoire pour un nouveeau proceessus");
+        PANIC("No more memory available for new process");
     }
 
     new_proc->id = process_count;
@@ -132,7 +132,7 @@ uintptr_t schedule(registers_t* regs)
     }
 
     if (process_count == 0) {
-        PANIC("Plus de processus ?????? Comment ??");
+        PANIC("No more processes ?????? How ??");
     }
 
     if (current_process == nullptr) {
@@ -156,7 +156,7 @@ uintptr_t schedule(registers_t* regs)
         current_process = next;
 
         if (process_count == 0) {
-            PANIC("Plus de processus ?????? Comment ??");
+            PANIC("No more processes ?????? How ??");
         }
     }
 

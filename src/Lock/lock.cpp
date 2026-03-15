@@ -1,4 +1,4 @@
-#include "lock.hpp"
+#include "Lock/lock.hpp"
 
 Spinlock::Spinlock() { }
 

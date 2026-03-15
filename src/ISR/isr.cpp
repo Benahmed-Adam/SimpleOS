@@ -1,9 +1,9 @@
-#include "isr.hpp"
-#include "idt.hpp"
-#include "process.hpp"
-#include "stdint.h"
+#include "ISR/isr.hpp"
+#include "IDT/idt.hpp"
+#include "Process/process.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
+#include <stdint.h>
 
 #define MASTER_COMMAND 0x20
 #define MASTER_DATA 0x21

@@ -1,5 +1,5 @@
-#include "memory.hpp"
-#include "vga.hpp"
+#include "Memory/memory.hpp"
+#include "VGA/vga.hpp"
 
 struct Memory_block {
     bool isFree;
@@ -16,7 +16,7 @@ uint32_t mem_upper = 0;
 bool memory_init(multiboot_info* info)
 {
     if (!(info->flags & (1 << 6))) {
-        VGA::println("Erreur: Pas de mmap disponible.");
+        VGA::println("Error: No mmap available.");
         return false;
     }
 
@@ -25,7 +25,7 @@ bool memory_init(multiboot_info* info)
     uint32_t mmap_end = info->mmap_addr + info->mmap_length;
     mem_upper = info->mem_upper;
 
-    VGA::println("Analyse de la memoire...");
+    VGA::println("Analyzing memory...");
 
     while (mmap_ptr < mmap_end) {
         multiboot_mmap_entry* entry = (multiboot_mmap_entry*)mmap_ptr;
@@ -50,8 +50,8 @@ bool memory_init(multiboot_info* info)
                 memory_list->next = nullptr;
                 memory_list->prev = nullptr;
 
-                VGA::println("Adresse de debut : ", (void*)base);
-                VGA::println("Taille: ", (int)(length / 1024), " KB");
+                VGA::println("Start address: ", (void*)base);
+                VGA::println("Size: ", (int)(length / 1024), " KB");
 
                 break;
             }
@@ -69,7 +69,7 @@ void* malloc(size_t size)
 
     while (curr != nullptr) {
         if (curr->isFree && curr->size >= size) {
-            if (curr->size > size + sizeof(Memory_block) + 4) { // pour découper un morceau si trop grand
+            if (curr->size > size + sizeof(Memory_block) + 4) { // to split a piece if too big
                 uintptr_t new_addr = (uintptr_t)curr + sizeof(Memory_block) + size;
                 Memory_block* newBlock = (Memory_block*)new_addr;
 
@@ -147,13 +147,13 @@ void print_memory_blocks()
 {
     const Memory_block* curr = memory_list;
 
-    VGA::print("[ Debut ] -> ");
+    VGA::print("[ Start ] -> ");
     while (curr != nullptr) {
-        VGA::print("[ ", (void*)curr, " | ", curr->size, " | ", curr->isFree ? "libre" : "occupe", " ]  -> ");
+        VGA::print("[ ", (void*)curr, " | ", curr->size, " | ", curr->isFree ? "free" : "occupied", " ]  -> ");
         curr = curr->next;
     }
 
-    VGA::println("[ Fin ]");
+    VGA::println("[ End ]");
 }
 
 void* operator new(size_t size)

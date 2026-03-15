@@ -18,7 +18,7 @@ ALL_OBJ = $(OBJ_CXX) $(OBJ_ASM)
 
 CXXFLAGS = -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti -I$(SRC_DIR)
 ASFLAGS  = -f elf32
-LDFLAGS  = -T linker.ld -ffreestanding -O2 -nostdlib -lgcc
+LDFLAGS  = -T linker.ld -ffreestanding -O2 -nostdlib -lgcc -z notext
 
 .PHONY: all clean run iso
 

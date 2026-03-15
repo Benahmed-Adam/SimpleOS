@@ -1,6 +1,6 @@
-#include "idt.hpp"
+#include "IDT/idt.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
 #include <stdint.h>
 
 struct __attribute__((packed)) idt_entry_struct {

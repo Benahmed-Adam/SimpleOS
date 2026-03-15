@@ -1,4 +1,4 @@
-#include "input.hpp"
+#include "Input/input.hpp"
 #include <stdint.h>
 
 void push_key(char c)
@@ -73,27 +73,27 @@ char getKeyPressed()
 
 void init_keyboard()
 {
-    VGA::println("Initialisation du clavier");
+    VGA::println("Keyboard initialization");
 
     outb(0x64, 0xFF);
     uint8_t status = inb(0x64);
-    VGA::println("Status recu apres reset : ", status);
+    VGA::println("Status received after reset: ", status);
 
     status = inb(0x64);
     if (status & (1 << 0)) {
-        VGA::println("Buffer de sortie plein");
+        VGA::println("Output buffer full");
     } else {
-        VGA::println("Buffer de sortie vide");
+        VGA::println("Output buffer empty");
     }
 
     if (status & (1 << 1)) {
-        VGA::println("Input buffer plein");
+        VGA::println("Input buffer full");
     } else {
-        VGA::println("Input buffer vide");
+        VGA::println("Input buffer empty");
     }
 
     if (status & (1 << 2)) {
-        VGA::println("Systeem flag present");
+        VGA::println("System flag present");
     } else {
         VGA::println("System flag absent");
     }
@@ -107,32 +107,32 @@ void init_keyboard()
     if (status & (1 << 6)) {
         VGA::println("Timeout");
     } else {
-        VGA::println("Pas de timeout");
+        VGA::println("No timeout");
     }
 
     if (status & (1 << 7)) {
-        VGA::println("Erreur de parite");
+        VGA::println("Parity error");
     } else {
-        VGA::println("Pas d'erreur de parite");
+        VGA::println("No parity error");
     }
 
     outb(0x64, 0xAA);
     uint8_t result = inb(0x60);
 
     if (result == 0x55) {
-        VGA::println("Tests passe");
+        VGA::println("Tests passed");
     } else if (result == 0xFC) {
-        VGA::println("Test echoue");
+        VGA::println("Test failed");
     } else {
-        VGA::println("Le clavier a repondu avec un code inattendu : ", result);
+        VGA::println("Keyboard responded with unexpected code: ", result);
     }
 
     outb(0x64, 0x20);
     result = inb(0x60);
-    VGA::println("Config bytee: ", (void*)result);
+    VGA::println("Config byte: ", result);
 
     register_interrupt_handler(IRQ1, handler_input);
 
-    VGA::println("Clavier OK");
+    VGA::println("Keyboard OK");
 }
 }

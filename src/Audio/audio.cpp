@@ -1,5 +1,5 @@
-#include "audio.hpp"
-#include "time.hpp"
+#include "Audio/audio.hpp"
+#include "Time/time.hpp"
 #include "utils.hpp"
 
 void play_sound(uint32_t nFrequence)

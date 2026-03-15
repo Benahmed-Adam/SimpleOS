@@ -40,7 +40,7 @@ namespace VGA {
     void write(char data);
     void write(int data);
     void write(unsigned int data);
-    void write(const void* data); // afficher une adresse
+    void write(const void* data); // display an address
     void write(double data);
     void put_char(char c);
     void next_line();

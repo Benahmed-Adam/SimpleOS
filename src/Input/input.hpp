@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include "utils.hpp"
-#include "isr.hpp"
+#include "ISR/isr.hpp"
 
 namespace PS2 {
     static const int KEYBOARD_BUFFER_SIZE = 256;

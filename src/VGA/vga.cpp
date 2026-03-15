@@ -1,5 +1,5 @@
-#include "vga.hpp"
-#include "lock.hpp"
+#include "VGA/vga.hpp"
+#include "Lock/lock.hpp"
 #include "utils.hpp"
 
 const size_t WIDTH = 80;

@@ -1,8 +1,8 @@
-#include "time.hpp"
-#include "isr.hpp"
-#include "process.hpp"
+#include "Time/time.hpp"
+#include "ISR/isr.hpp"
+#include "Process/process.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
 
 volatile uint32_t ticks;
 uint32_t frequency;
@@ -26,9 +26,8 @@ void init_timer(uint32_t frequency)
     outb(0x40, low);
     outb(0x40, high);
 
-    VGA::println("PIT initialise a ", frequency, " Hz");
+    VGA::println("PIT initialized at ", frequency, " Hz");
 
-    VGA::println("Ajout du PIT a l IRQ0");
     register_interrupt_handler(IRQ0, timer_handler);
 }
 

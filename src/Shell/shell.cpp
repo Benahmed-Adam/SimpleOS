@@ -1,11 +1,11 @@
-#include "shell.hpp"
-#include "audio.hpp"
-#include "input.hpp"
-#include "memory.hpp"
-#include "process.hpp"
-#include "time.hpp"
+#include "Shell/shell.hpp"
+#include "Audio/audio.hpp"
+#include "Input/input.hpp"
+#include "Memory/memory.hpp"
+#include "Process/process.hpp"
+#include "Time/time.hpp"
+#include "VGA/vga.hpp"
 #include "utils.hpp"
-#include "vga.hpp"
 
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 16
@@ -56,20 +56,20 @@ bool cmd_clear(char**)
 
 bool cmd_hello(char**)
 {
-    VGA::println("Salutation !");
+    VGA::println("Greeting !");
     return true;
 }
 
 bool cmd_info(char**)
 {
-    VGA::println("Infos systeme : blablabla");
+    VGA::println("System info : blablabla");
     return true;
 }
 
 bool cmd_memory(char** args)
 {
     if (args[1] == nullptr) {
-        VGA::println("Mauvais usage ! Un parametre est requis");
+        VGA::println("Bad usage! A parameter is required");
         return false;
     }
 
@@ -77,11 +77,11 @@ bool cmd_memory(char** args)
     if (strcmp(arg, "abmem") == 0) {
         print_memory_blocks();
     } else if (strcmp(arg, "amem") == 0) {
-        VGA::println("Total memoire disponoble : ", get_avalaible_memory_in_mb(), " MB");
+        VGA::println("Total available memory: ", get_avalaible_memory_in_mb(), " MB");
     } else if (strcmp(arg, "tmem") == 0) {
-        VGA::println("Total memoire : ", get_total_memory_in_mb(), " MB");
+        VGA::println("Total memory: ", get_total_memory_in_mb(), " MB");
     } else {
-        VGA::println("Mauvais usage ! Un parametre valide est requis");
+        VGA::println("Bad usage! A valid parameter is required");
         return false;
     }
 
@@ -91,7 +91,7 @@ bool cmd_memory(char** args)
 bool cmd_color(char** args)
 {
     if (args[1] == nullptr || args[2] == nullptr) {
-        VGA::println("Mauvais usage! color <foreground> <background>");
+        VGA::println("Bad usage! color <foreground> <background>");
         VGA::println("Ex: color yellow blue");
         return false;
     }
@@ -100,12 +100,12 @@ bool cmd_color(char** args)
     VGA::Color bg = stringToColor(args[2]);
 
     if (fg == 255 || bg == 255) {
-        VGA::println("Couleur invalide.");
+        VGA::println("Invalid color.");
         return false;
     }
 
     if (fg == bg) {
-        VGA::println("La police et le fond doivent etre differents.");
+        VGA::println("Foreground and background must be different.");
         return false;
     }
 
@@ -135,7 +135,6 @@ bool cmd_banner(char**)
     VGA::println("|  |_|  ||_____  |  |   |  |    ___||_____  |  |   |  ");
     VGA::println("|       | _____| |  |   |  |   |___  _____| |  |   |  ");
     VGA::println("|_______||_______|  |___|  |_______||_______|  |___|  ");
-    VGA::println("\n---------------------- Par Moi ---------------------");
 
     return true;
 }
@@ -160,7 +159,7 @@ bool cmd_shutdown(char**)
 
 bool cmd_uptime(char**)
 {
-    VGA::println(uptime(), " secondes");
+    VGA::println(uptime(), " seconds");
     return true;
 }
 
@@ -169,7 +168,7 @@ bool cmd_ps(char**)
     Process* p = Scheduler::get_process_list();
 
     while (p != nullptr) {
-        VGA::println("PID : ", p->pid, " Nom : ", p->name);
+        VGA::println("PID: ", p->pid, " Name: ", p->name);
         p = p->next;
     }
 
@@ -179,41 +178,41 @@ bool cmd_ps(char**)
 bool cmd_kill(char** args)
 {
     if (args[1] == nullptr) {
-        VGA::println("Mauvais usage! kill <pid>");
+        VGA::println("Bad usage! kill <pid>");
         return false;
     }
 
     Process* p = Scheduler::get_process_list();
 
-    while (p != nullptr && p->pid != atoi(args[1])) {
+    while (p != nullptr && p->pid != (uint32_t)atoi(args[1])) {
         p = p->next;
     }
 
     if (p != nullptr) {
         Scheduler::remove_process(p);
-        VGA::println("Le processus : ", args[1], " a bien ete elimine");
+        VGA::println("Process: ", args[1], " has been killed");
     } else {
-        VGA::println("Processus inexistant");
+        VGA::println("Nonexistent process");
     }
 
     return true;
 }
 
 Command commandList[] = {
-    { "help", "Affiche le aide ou le aide de une commande (help <cmd>)", cmd_help },
-    { "clear", "Efface le ecran", cmd_clear },
-    { "hello", "Affiche un message gentil", cmd_hello },
-    { "info", "Affiche les infos du pc", cmd_info },
-    { "memory", "Affiche les infos de la memoire (memory <abmem | amem | tmem>)", cmd_memory },
-    { "color", "Change la couleur des caracteres et de fond\n Couleurs disponible : \n- black\n- blue\n- green\n- cyan\n- red\n- magenta\n- brown\n- lgrey\n- dgrey\n- lblue\n- lgreen\n- lcyan\n- lred\n- lmagenta\n- yellow\n- white", cmd_color },
-    { "echo", "Affiche tout ce qui est passe en parametre", cmd_echo },
-    { "banner", "Affiche la banniere de l os", cmd_banner },
-    { "shutdown", "Eteind le pc", cmd_shutdown },
-    { "reboot", "Redemarre le pc", cmd_reboot },
-    { "music", "Joue de la musique", cmd_music },
-    { "uptime", "Uptime du pc", cmd_uptime },
-    { "ps", "Affiche tout les processus en cours", cmd_ps },
-    { "kill", "Assasine violement un processus (kill <pid>)", cmd_kill }
+    { "help", "Display help or help for a command (help <cmd>)", cmd_help },
+    { "clear", "Clear the screen", cmd_clear },
+    { "hello", "Display a friendly message", cmd_hello },
+    { "info", "Display pc info", cmd_info },
+    { "memory", "Display memory info (memory <abmem | amem | tmem>)", cmd_memory },
+    { "color", "Change foreground and background color\n Available colors: \n- black\n- blue\n- green\n- cyan\n- red\n- magenta\n- brown\n- lgrey\n- dgrey\n- lblue\n- lgreen\n- lcyan\n- lred\n- lmagenta\n- yellow\n- white", cmd_color },
+    { "echo", "Display everything passed as parameter", cmd_echo },
+    { "banner", "Display the os banner", cmd_banner },
+    { "shutdown", "Turn off the pc", cmd_shutdown },
+    { "reboot", "Reboot the pc", cmd_reboot },
+    { "music", "Play music", cmd_music },
+    { "uptime", "Pc uptime", cmd_uptime },
+    { "ps", "Display all running processes", cmd_ps },
+    { "kill", "Violently kill a process (kill <pid>)", cmd_kill }
 };
 
 const int numCommands = sizeof(commandList) / sizeof(Command);
@@ -227,9 +226,9 @@ bool cmd_help(char** args)
                 return true;
             }
         }
-        VGA::println("Commande inconnue pour le aide.");
+        VGA::println("Unknown command for help.");
     } else {
-        VGA::println("Commandes disponibles :");
+        VGA::println("Available commands:");
         for (int i = 0; i < numCommands; i++) {
             VGA::println("- ", commandList[i].name);
         }
@@ -253,7 +252,7 @@ void executeCommand(char* cmd, char** args)
         }
     }
 
-    VGA::print("Commande inconnue: ");
+    VGA::print("Unknown command: ");
     VGA::println(cmd);
 }
 

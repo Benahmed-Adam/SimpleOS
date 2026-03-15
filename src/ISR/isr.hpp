@@ -3,27 +3,27 @@
 #include <stdint.h>
 
 struct registers_t {
-    // Segments poussés manuellement (LIFO : le dernier poussé est le premier ici)
-    uint32_t ds;       // Poussé en dernier
+    // Manually pushed segments (LIFO: last pushed is first here)
+    uint32_t ds; // Pushed last
     uint32_t es;
     uint32_t fs;
-    uint32_t gs;       // Poussé en premier
+    uint32_t gs; // Pushed first
 
-    // Registres poussés par pusha (Ordre inverse de pusha)
+    // Registers pushed by pusha (reverse order of pusha)
     uint32_t edi, esi, ebp, esp_unused, ebx, edx, ecx, eax;
 
-    // Poussés par le macro isr_noerr / isr_err
+    // Pushed by isr_noerr / isr_err macro
     uint32_t int_no, err_code;
 
-    // Poussés automatiquement par le processeur lors de l'interruption
+    // Automatically pushed by the processor during the interrupt
     uint32_t eip, cs, eflags, useresp, ss;
 };
 
 extern "C" {
-    typedef uintptr_t (*isr_handler_t)(registers_t*);
-    void register_interrupt_handler(uint8_t interrupt, isr_handler_t handler);
-    uintptr_t isr_handler(registers_t* regs);
-    uintptr_t irq_handler(registers_t* regs);
+typedef uintptr_t (*isr_handler_t)(registers_t*);
+void register_interrupt_handler(uint8_t interrupt, isr_handler_t handler);
+uintptr_t isr_handler(registers_t* regs);
+uintptr_t irq_handler(registers_t* regs);
 }
 
 #define IRQ0 32

@@ -61,31 +61,31 @@ isr_noerr 31
 
 extern isr_handler
 isr_stub:
-    pusha           ; Pousse EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX
+    pusha           ; Push EDI, ESI, EBP, ESP, EBX, EDX, ECX, EAX
 
-    push ds         ; Sauvegarde les segments proprement
+    push ds         ; Properly save the segments
     push es
     push fs
     push gs
 
-    mov ax, 0x10    ; Charge les segments de données du noyau
+    mov ax, 0x10    ; Load kernel data segments
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
 
-    push esp        ; Pousse le pointeur vers la structure registers_t
+    push esp        ; Push pointer to registers_t structure
     call isr_handler
-    mov esp, eax    ; IMPORTANT : eax doit pointer sur une structure registers_t valide
+    mov esp, eax    ; IMPORTANT: eax must point to a valid registers_t structure
 
-    pop gs          ; Restaure dans l'ordre INVERSE
+    pop gs          ; Restore in REVERSE order
     pop fs
     pop es
     pop ds
 
     popa
-    add esp, 8      ; Nettoie le code d'erreur et le numéro d'interruption
-    iretd           ; Utilise iretd pour le mode 32 bits
+    add esp, 8      ; Clean up error code and interrupt number
+    iretd           ; Use iretd for 32-bit mode
 
 ;; num %1 map %2
 %macro irq 2
