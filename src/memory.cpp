@@ -13,7 +13,8 @@ extern "C" uint32_t end;
 Memory_block* memory_list = nullptr;
 uint32_t mem_upper = 0;
 
-bool memory_init(multiboot_info* info) {
+bool memory_init(multiboot_info* info)
+{
     if (!(info->flags & (1 << 6))) {
         VGA::println("Erreur: Pas de mmap disponible.");
         return false;
@@ -51,8 +52,8 @@ bool memory_init(multiboot_info* info) {
 
                 VGA::println("Adresse de debut : ", (void*)base);
                 VGA::println("Taille: ", (int)(length / 1024), " KB");
-                
-                break; 
+
+                break;
             }
         }
 
@@ -62,7 +63,8 @@ bool memory_init(multiboot_info* info) {
     return true;
 }
 
-void* malloc(size_t size) {
+void* malloc(size_t size)
+{
     Memory_block* curr = memory_list;
 
     while (curr != nullptr) {
@@ -94,9 +96,11 @@ void* malloc(size_t size) {
     return nullptr;
 }
 
-void free(void* ptr) {
-    if (ptr == nullptr) return;
-    
+void free(void* ptr)
+{
+    if (ptr == nullptr)
+        return;
+
     Memory_block* currPtr = (Memory_block*)((uintptr_t)ptr - sizeof(Memory_block));
     currPtr->isFree = true;
 
@@ -117,7 +121,8 @@ void free(void* ptr) {
     }
 }
 
-float get_avalaible_memory_in_mb() {
+float get_avalaible_memory_in_mb()
+{
     float res = 0;
     const Memory_block* curr = memory_list;
 
@@ -133,11 +138,13 @@ float get_avalaible_memory_in_mb() {
     return res;
 }
 
-float get_total_memory_in_mb() {
+float get_total_memory_in_mb()
+{
     return (mem_upper + 1024) / 1024;
 }
 
-void print_memory_blocks() {
+void print_memory_blocks()
+{
     const Memory_block* curr = memory_list;
 
     VGA::print("[ Debut ] -> ");
@@ -149,27 +156,32 @@ void print_memory_blocks() {
     VGA::println("[ Fin ]");
 }
 
-
-void* operator new(size_t size) {
+void* operator new(size_t size)
+{
     return malloc(size);
 }
 
-void* operator new[](size_t size) {
+void* operator new[](size_t size)
+{
     return malloc(size);
 }
 
-void operator delete(void* ptr) {
+void operator delete(void* ptr)
+{
     return free(ptr);
 }
 
-void operator delete[](void* ptr) {
+void operator delete[](void* ptr)
+{
     return free(ptr);
 }
 
-void operator delete(void* ptr, unsigned int) {
+void operator delete(void* ptr, unsigned int)
+{
     return free(ptr);
 }
 
-void operator delete[](void* ptr, unsigned int) {
+void operator delete[](void* ptr, unsigned int)
+{
     return free(ptr);
 }

@@ -1,19 +1,24 @@
 #include "lock.hpp"
 
-Spinlock::Spinlock() {}
+Spinlock::Spinlock() { }
 
-void Spinlock::acquire() {
+void Spinlock::acquire()
+{
     asm volatile("cli" : : : "memory");
 }
 
-void Spinlock::release() {
+void Spinlock::release()
+{
     asm volatile("sti" : : : "memory");
 }
 
-LockGuard::LockGuard(Spinlock& l) : _lock(l) {
+LockGuard::LockGuard(Spinlock& l)
+    : _lock(l)
+{
     _lock.acquire();
 }
 
-LockGuard::~LockGuard() {
+LockGuard::~LockGuard()
+{
     _lock.release();
 }
