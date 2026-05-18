@@ -1,4 +1,4 @@
-# OsTest - A Simple x86 Kernel
+# SimpleOS - A Simple x86 Kernel
 
 A simple 32-bit operating system kernel written in C++ for x86 architecture. This project is an educational operating system that demonstrates fundamental OS concepts including memory management, interrupt handling, process scheduling, and a simple shell.
 
