@@ -1,4 +1,5 @@
 #include "Memory/memory.hpp"
+#include "Lock/lock.hpp"
 #include "VGA/vga.hpp"
 
 struct Memory_block {
@@ -12,6 +13,7 @@ extern "C" uint32_t end;
 
 Memory_block* memory_list = nullptr;
 uint32_t mem_upper = 0;
+Spinlock heapLock;
 
 bool memory_init(multiboot_info* info)
 {
@@ -65,11 +67,12 @@ bool memory_init(multiboot_info* info)
 
 void* malloc(size_t size)
 {
+    LockGuard g(heapLock);
     Memory_block* curr = memory_list;
 
     while (curr != nullptr) {
         if (curr->isFree && curr->size >= size) {
-            if (curr->size > size + sizeof(Memory_block) + 4) { // to split a piece if too big
+            if (curr->size > size + sizeof(Memory_block) + 4) {
                 uintptr_t new_addr = (uintptr_t)curr + sizeof(Memory_block) + size;
                 Memory_block* newBlock = (Memory_block*)new_addr;
 
@@ -101,12 +104,17 @@ void free(void* ptr)
     if (ptr == nullptr)
         return;
 
+    LockGuard g(heapLock);
     Memory_block* currPtr = (Memory_block*)((uintptr_t)ptr - sizeof(Memory_block));
     currPtr->isFree = true;
 
     if (currPtr->next != nullptr && currPtr->next->isFree) {
         currPtr->size += sizeof(Memory_block) + currPtr->next->size;
         currPtr->next = currPtr->next->next;
+
+        if (currPtr->next != nullptr) {
+            currPtr->next->prev = currPtr;
+        }
     }
 
     if (currPtr->prev != nullptr && currPtr->prev->isFree) {

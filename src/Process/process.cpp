@@ -142,20 +142,13 @@ uintptr_t schedule(registers_t* regs)
     }
 
     while (current_process->state == State::FINISHED) {
-        process_to_delete = current_process;
         Process* next = current_process->next ? current_process->next : head;
-        if (process_to_delete != nullptr) {
-            Process* to_delete = process_to_delete;
-            process_to_delete = nullptr;
-
-            if (current_process == to_delete) {
-                current_process = to_delete->next ? to_delete->next : head;
-            }
-            remove_process(to_delete);
+        if (current_process != process_to_delete) {
+            remove_process(current_process);
         }
         current_process = next;
 
-        if (process_count == 0) {
+        if (process_count == 0 || (process_count == 1 && current_process == process_to_delete)) {
             PANIC("No more processes ?????? How ??");
         }
     }

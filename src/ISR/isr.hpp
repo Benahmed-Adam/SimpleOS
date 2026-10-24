@@ -44,7 +44,7 @@ uintptr_t irq_handler(registers_t* regs);
 #define IRQ15 47
 
 enum IsrCode : uint32_t {
-    DIVISION_BY_ZERO = 1,
+    DIVISION_BY_ZERO = 0,
     DEBUG_EXCEPTION,
     NON_MASKABLE_INTERRUPT,
     BREAKPOINT_EXCEPTION,

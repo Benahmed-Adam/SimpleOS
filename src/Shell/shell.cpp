@@ -1,6 +1,7 @@
 #include "Shell/shell.hpp"
 #include "Audio/audio.hpp"
 #include "Input/input.hpp"
+#include "Lock/lock.hpp"
 #include "Memory/memory.hpp"
 #include "Process/process.hpp"
 #include "Time/time.hpp"
@@ -9,6 +10,8 @@
 
 #define BUFFER_SIZE 1024
 #define MAX_ARGS 16
+
+Spinlock killLock;
 
 VGA::Color stringToColor(const char* str)
 {
@@ -182,14 +185,21 @@ bool cmd_kill(char** args)
         return false;
     }
 
-    Process* p = Scheduler::get_process_list();
+    Process* p;
+    {
+        LockGuard g(killLock);
+        p = Scheduler::get_process_list();
 
-    while (p != nullptr && p->pid != (uint32_t)atoi(args[1])) {
-        p = p->next;
+        while (p != nullptr && p->pid != (uint32_t)atoi(args[1])) {
+            p = p->next;
+        }
+
+        if (p != nullptr) {
+            p->state = State::FINISHED;
+        }
     }
 
     if (p != nullptr) {
-        Scheduler::remove_process(p);
         VGA::println("Process: ", args[1], " has been killed");
     } else {
         VGA::println("Nonexistent process");

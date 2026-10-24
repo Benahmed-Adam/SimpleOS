@@ -1,15 +1,18 @@
 #pragma once
 
+#include <stdint.h>
+
 class Spinlock {
 public:
     Spinlock();
-    void acquire();
-    void release();
+    uint32_t acquire();
+    void release(uint32_t flags);
 };
 
 class LockGuard {
 private:
     Spinlock& _lock;
+    uint32_t _flags;
 
 public:
     explicit LockGuard(Spinlock& l);

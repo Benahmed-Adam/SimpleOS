@@ -2,23 +2,25 @@
 
 Spinlock::Spinlock() { }
 
-void Spinlock::acquire()
+uint32_t Spinlock::acquire()
 {
-    asm volatile("cli" : : : "memory");
+    uint32_t flags;
+    asm volatile("pushf; pop %0; cli" : "=r"(flags) : : "memory");
+    return flags;
 }
 
-void Spinlock::release()
+void Spinlock::release(uint32_t flags)
 {
-    asm volatile("sti" : : : "memory");
+    asm volatile("push %0; popf" : : "r"(flags) : "memory", "cc");
 }
 
 LockGuard::LockGuard(Spinlock& l)
     : _lock(l)
 {
-    _lock.acquire();
+    _flags = _lock.acquire();
 }
 
 LockGuard::~LockGuard()
 {
-    _lock.release();
+    _lock.release(_flags);
 }

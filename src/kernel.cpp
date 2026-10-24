@@ -29,10 +29,10 @@ extern "C" void kmain(multiboot_info* info, uint32_t magic)
     remap_pic();
     init_idt();
     PS2::init_keyboard();
-    init_timer(250);
 
     Scheduler::add_process(idle_task, "idle");
     Scheduler::add_process(shell, "shell");
+    init_timer(250);
 
     while (true) {
         asm volatile("hlt");

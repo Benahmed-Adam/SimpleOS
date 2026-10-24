@@ -45,5 +45,5 @@ $(OBJ_DIR)/%.s.o: $(SRC_DIR)/%.s
 clean:
 	rm -rf build $(DISK_IMG)
 
-run: $(DISK_IMG)
-	qemu-system-i386 -audiodev sdl,id=speaker -machine pcspk-audiodev=speaker -drive format=raw,file=$(DISK_IMG)
+run: $(KERNEL_BIN)
+	qemu-system-i386 -audiodev sdl,id=speaker -machine pcspk-audiodev=speaker -kernel $(KERNEL_BIN)

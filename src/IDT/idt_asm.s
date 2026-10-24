@@ -130,9 +130,7 @@ irq_stub:
     mov gs, ax
     
     push esp
-    cli
     call irq_handler
-    sti
     mov esp, eax
 
     pop gs
